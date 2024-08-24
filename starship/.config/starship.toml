@@ -15,10 +15,7 @@ $python\
 $lua\
 $nodejs\
 $golang\
-$haskell\
-$rust\
-$ruby\
-$aws\
+$typst\
 $docker_context\
 $jobs\
 $cmd_duration\
@@ -70,25 +67,12 @@ symbol = ' '
 style = 'blue'
 symbol = ' '
 
-[haskell]
-style = 'blue'
-symbol = ' '
-
-[rust]
-style = 'orange'
-symbol = ' '
-
 [ruby]
 style = 'blue'
 symbol = ' '
 
 [package]
 symbol = '󰏗 '
-
-[aws]
-symbol = ' '
-style = 'yellow'
-format = '[$symbol($profile )(\[$duration\] )]($style)'
 
 [docker_context]
 symbol = ' '
@@ -104,7 +88,7 @@ number_threshold = 1
 format = '[$symbol]($style)'
 
 [cmd_duration]
-min_time = 500
+min_time = 200
 style = 'fg:gray'
 format = '[$duration]($style)'
 

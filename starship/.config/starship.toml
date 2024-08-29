@@ -90,7 +90,7 @@ format = '[$symbol]($style)'
 [cmd_duration]
 min_time = 200
 style = 'fg:gray'
-format = '[$duration]($style)'
+format = '[$duration]($style) '
 
 # Themes
 [palettes.nord]

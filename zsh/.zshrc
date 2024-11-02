@@ -57,3 +57,5 @@ vv() {
   NVIM_APPNAME=$(basename $config) nvim $@
 }
 
+
+[ -f "/Users/mrisser/.ghcup/env" ] && . "/Users/mrisser/.ghcup/env" # ghcup-env

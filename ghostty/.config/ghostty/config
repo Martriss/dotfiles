@@ -1,0 +1,27 @@
+# Update
+auto-update = check
+
+# Thème de couleur - Nord
+theme = "nord"
+
+# Opacité et flou
+background-opacity = 0.5
+background-blur = 30
+
+# Style de curseur
+cursor-style = "bar"
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+# Police
+font-family = "JetBrains Mono"
+font-style = "Bold"
+font-size = 14
+
+# Pas de padding de fenêtre
+window-padding-x = 10
+window-padding-y = 0
+
+# Décoration de fenêtre
+macos-titlebar-style = tabs
+maximize = true

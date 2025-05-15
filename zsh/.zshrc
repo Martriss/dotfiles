@@ -14,6 +14,10 @@ export PATH=$PATH:$HOME/go/bin
 # Editor setting
 export EDITOR=nvim
 
+# Define / and _ as word separator
+WORDCHARS=${WORDCHARS/\/}
+WORDCHARS=${WORDCHARS/\_}
+
 # History settings (already well-configured)
 HISTSIZE=5000
 HISTFILE=~/.zsh_history

@@ -8,11 +8,6 @@ fi
 # Load Zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
-# Enable Powerlevel10k instant prompt (optional but very fast)
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-
 # PATH settings (no change needed)
 export PATH=$PATH:$HOME/go/bin
 
@@ -31,6 +26,7 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
+setopt hist_reduce_blanks
 
 # Keybindings
 bindkey -e # Mode Emacs
@@ -41,7 +37,14 @@ setopt globdots
 
 # Basic aliases
 alias py='python3'
-alias ls='ls --color'
+alias ls='eza --icons'                # Remplacé par eza avec icons
+alias lsl='ls -a --long --header --git'  # Alias pour listing détaillé
+alias la='ls -a'                      # Listing avec fichiers cachés
+alias ..='cd ..'                      # Remonter d'un niveau
+alias ...='cd ../..'                  # Remonter de deux niveaux
+alias grep='grep --color=auto'        # Grep avec coloration
+alias g='git'                         # Raccourci pour git
+alias vim='nvim'                      # Utilise neovim par défaut
 
 # Zinit plugin loading - everything in turbo mode for maximum performance
 zinit wait lucid for \
@@ -59,7 +62,7 @@ zinit ice wait lucid atload'[[ -f "/opt/homebrew/bin/brew" ]] && eval "$(/opt/ho
 zinit snippet /dev/null
 
 # Google Cloud SDK (lazy-loaded via Zinit)
-zinit ice wait"1" lucid 
+zinit ice wait"1" lucid
 zinit snippet /dev/null
 zinit ice wait"1" lucid atload'
   [[ -f "/Users/mrisser/google-cloud-sdk/path.zsh.inc" ]] && source "/Users/mrisser/google-cloud-sdk/path.zsh.inc"
@@ -100,71 +103,39 @@ zinit wait lucid for \
   atload"!_zsh_autosuggest_start" \
   zsh-users/zsh-autosuggestions
 
-# Starship prompt (load directly for reliability)
+# Configuration minimaliste de la complétion
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+
+# Starship prompt
 if command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
-
-# Alternative: use Zinit to load it (commented out)
-# zinit ice wait"0" lucid
-# zinit snippet /dev/null
-# zinit ice wait"0" lucid atload'eval "$(starship init zsh)"'
-# zinit snippet /dev/null
 
 # Nvim config prompt function (already efficient)
 vv() {
   # Assumes all configs exist in directories named ~/.config/nvim-*
   local config=$(fd --max-depth 1 --glob 'nvim-*' ~/.config | fzf --prompt="Neovim Configs > " --height=~50% --layout=reverse --border --exit-0)
- 
+
   # If I exit fzf without selecting a config, don't open Neovim
   [[ -z $config ]] && echo "No config selected" && return
- 
+
   # Open Neovim with the selected config
   NVIM_APPNAME=$(basename $config) nvim $@
 }
-
-# Completion keybindings and options
-# Tab completion configuration
-bindkey '^I' complete-word        # tab to complete
-bindkey '^[[Z' reverse-menu-complete  # shift-tab to reverse complete
-
-# Completion menu navigation with arrow keys
-zmodload zsh/complist
-bindkey -M menuselect '^h' vi-backward-char
-bindkey -M menuselect '^j' vi-down-line-or-history
-bindkey -M menuselect '^k' vi-up-line-or-history
-bindkey -M menuselect '^l' vi-forward-char
-bindkey -M menuselect '^[[A' vi-up-line-or-history    # Up arrow
-bindkey -M menuselect '^[[B' vi-down-line-or-history  # Down arrow
-bindkey -M menuselect '^[[C' vi-forward-char          # Right arrow
-bindkey -M menuselect '^[[D' vi-backward-char         # Left arrow
-
-# Useful keybindings for accepting/canceling completion
-bindkey -M menuselect '^M' .accept-line               # Enter to accept
-bindkey -M menuselect '^G' send-break                 # Ctrl+G to cancel
-bindkey -M menuselect '^O' accept-and-infer-next-history  # Ctrl+O to accept and show next
-
-# Additional completion settings for better user experience
-zstyle ':completion:*' special-dirs true              # Complete special directories
-zstyle ':completion:*' list-separator '-->'           # Separator in completion lists
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'  # Color process list
-zstyle ':completion:*' accept-exact '*(N)'           # Don't require exact match if there is none
-
-# Configure completions (moved to the bottom for better performance)
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' verbose yes
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:messages' format '%F{yellow}-- %d --%f'
-zstyle ':completion:*:warnings' format '%F{red}-- No matches found --%f'
-zstyle ':completion:*:corrections' format '%F{yellow}-- %d (errors: %e) --%f'
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 
 # Function to create directory and cd into it
 mkcd() {
   mkdir -p "$@" && cd "$@"
 }
 
+# Fonction serve - serveur web rapide dans le répertoire courant
+serve() {
+  local port="${1:-8000}"
+  python3 -m http.server "$port"
+}
+
+# Fonction pour afficher le chemin d'accès de manière lisible
+path() {
+  echo $PATH | tr ':' '\n'
+}
